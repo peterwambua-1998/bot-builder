@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('bot_id');
             $table->enum('type', ['welcome', 'ai']);
             $table->boolean('options')->default(0);
+            $table->longText('message')->nullable();
             $table->timestamps();
         });
     }

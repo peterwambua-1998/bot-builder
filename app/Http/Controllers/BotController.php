@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bot;
+use App\Models\Node;
+use App\Models\NodeOption;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BotController extends Controller
 {
@@ -43,5 +46,38 @@ class BotController extends Controller
         $request->validate([
             'bot_id' => 'required'
         ]);
+
+        DB::beginTransaction();
+        try {
+            $node = new Node();
+            $node->bot_id = $request->bot_id;
+            $node->type = 'welcome';
+            if (count(($request->Type)) > 0) {
+                $node->options = 1;
+            }
+            $node->message = $request->message;
+            $node->save();
+
+            if (count(($request->Type)) > 0) {
+                for ($i=0; $i < count(($request->Type)); $i++) { 
+                    $nodeOption = new NodeOption();
+                    $nodeOption->node_id = $node->id;
+                    $nodeOption->option_type = 1;
+                    $nodeOption->type = $request->Type[$i];
+                    $nodeOption->value = $request->value[$i];
+                    $nodeOption->display_value = $request->display_value[$i];
+                    $nodeOption->save();
+                }
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Record stored successfully');
+        } catch (\PDOException $th) {
+            //throw $th;
+            DB::rollBack();
+            dd($th->getMessage(), $th->getLine());
+            return redirect()->back()->with('error', 'System error please try again');
+        }
+       
     }
 }

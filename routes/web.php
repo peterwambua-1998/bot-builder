@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\api\BotController;
+use App\Http\Controllers\BotController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DrinkController;
 use App\Http\Controllers\DrinkOrderController;
@@ -33,7 +33,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::get('/bots', [BotController::class, 'index'])->name('bots.index');
 Route::get('/bots/create', [BotController::class, 'create'])->name('bots.create');
-Route::post('/bots/store', [BotController::class, 'store'])->name('bots.post');
+Route::post('/bots/store', [BotController::class, 'store'])->name('bots.store');
 
 Route::get('/bots/workflow/{id}', [BotController::class, 'workflow'])->name('bot.workflow');
 Route::post('/bots/workflow/store', [BotController::class, 'workflowStore'])->name('bot.workflow.store');
