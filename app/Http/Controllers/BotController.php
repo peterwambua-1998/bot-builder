@@ -38,7 +38,10 @@ class BotController extends Controller
     public function workflow($id)
     {
         $bot = Bot::find($id);
-        return view('bots.workflow', compact('bot'));
+        $welcome_node = Node::where('bot_id', '=', $bot->id)->where('type', '=', 'welcome')->first();
+        $welcome_node_options = NodeOption::where('node_id', '=', $welcome_node->id)->get();
+        
+        return view('bots.workflow', compact('bot', 'welcome_node', 'welcome_node_options'));
     }
 
     public function workflowStore(Request $request)
@@ -51,7 +54,7 @@ class BotController extends Controller
         try {
             $node = new Node();
             $node->bot_id = $request->bot_id;
-            $node->type = 'welcome';
+            $node->type = $request->type;
             if (count(($request->Type)) > 0) {
                 $node->options = 1;
             }
@@ -62,7 +65,7 @@ class BotController extends Controller
                 for ($i=0; $i < count(($request->Type)); $i++) { 
                     $nodeOption = new NodeOption();
                     $nodeOption->node_id = $node->id;
-                    $nodeOption->option_type = 1;
+                    $nodeOption->option_type = $request->option_type[$i];
                     $nodeOption->type = $request->Type[$i];
                     $nodeOption->value = $request->value[$i];
                     $nodeOption->display_value = $request->display_value[$i];

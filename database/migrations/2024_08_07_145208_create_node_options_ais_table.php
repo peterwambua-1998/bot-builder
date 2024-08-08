@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // used for other nodes that have options
-        Schema::create('node_options', function (Blueprint $table) {
+        Schema::create('node_options_ais', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('node_id');
-            $table->boolean('option_type')->default(1); // 1. button 2. form
+            $table->boolean('option_type')->default(2); // 1. button 2. ai
             $table->boolean('type')->default(1); // 1. conversational, 2. link
-            $table->string('value');
-            $table->string('display_value');
+            $table->string('instructions'); // alias prompt
+            $table->string('out_of_context_msg');
+            $table->string('website_link');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('node_options');
+        Schema::dropIfExists('node_options_ais');
     }
 };

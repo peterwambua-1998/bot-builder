@@ -9,7 +9,9 @@
       <li class="breadcrumb-item"><a href="{{route('bots.index')}}">Bot</a></li>
       <li class="breadcrumb-item active" aria-current="page">workflow</li>
     </ol>
-   
+   <div>
+        <a href="#" class="btn btn-success">Test Bot</a>
+   </div>
 </nav>
 
 @include('error-display')
@@ -47,6 +49,7 @@
         <form action="{{route('bot.workflow.store')}}" method="post">
             @csrf
             <input type="hidden" name="bot_id" value="{{$bot->id}}">
+            <input type="hidden" name="type" value="welcome">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Configure welcome message</h5>
@@ -58,37 +61,65 @@
 
                     <div class="mb-4 col-md-12">
                         <label for="name" class="form-label">Define your welcome message</label>
-                        <input type="text" class="form-control" name="message" autocomplete="off" placeholder="Ex: Hello you can checkout our products...">
+                        <input type="text" @if ($welcome_node) value="{{$welcome_node->message}}"` @endif class="form-control" name="message" autocomplete="off" placeholder="Ex: Hello you can checkout our products...">
                     </div>
 
                     <div class="mb-5 col-md-12">
-                        <input type="checkbox" class="form-check-input" id="add_options" value="off">
+                        <input type="checkbox" class="form-check-input" @if ($welcome_node_options->count() > 0) checked @endif id="add_options" value="off">
                         <label class="form-check-label" for="checkDefault">
                         Add options to welcome message 
                         </label>
                     </div>
 
-                    <div id="options_area" >
-                        <div class="mb-4">
-                            <div class="mb-2 col-md-12">
-                                <label for="name" class="form-label">Define your welcome message</label>
-                                <select name="Type[]" class="form-select">
-                                    <option value="0">Choose option...</option>
-                                    <option value="1">conversational</option>
-                                    <option value="2">link</option>
-                                </select>
-                            </div>
+                    <input type="hidden" id="options_count" value="{{count($welcome_node_options)}}">
 
-                            <div class="mb-2 col-md-12">
-                                <label for="name" class="form-label">Button value</label>
-                                <input type="text" class="form-control" name="display_value[]" autocomplete="off" placeholder="Enter display value">
+                    <div id="options_area">
+                        @if (count($welcome_node_options) > 0)
+                            @foreach ($welcome_node_options as $op)
+                                <div class="mb-4">
+                                    <div class="mb-2 col-md-12">
+                                        <label for="name" class="form-label">Define your welcome message</label>
+                                        <select name="Type[]" class="form-select">
+                                            <option value="0">Choose option...</option>
+                                            <option @if($op->type == 1) selected @endif value="1">conversational</option>
+                                            <option @if($op->type == 2) selected @endif value="2">link</option>
+                                        </select>
+                                    </div>
+                                    <input type="hidden" name="option_type[]" value="1">
+                                    <div class="mb-2 col-md-12">
+                                        <label for="name" class="form-label">Button value</label>
+                                        <input type="text" class="form-control" value="{{$op->display_value}}" name="display_value[]" autocomplete="off" placeholder="Enter display value">
+                                    </div>
+            
+                                    <div class="mb-2 col-md-12">
+                                        <label for="name" class="form-label">Button action</label>
+                                        <input type="text" class="form-control" name="value[]" value="{{$op->value}}" autocomplete="off" placeholder="Enter value">
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="mb-4">
+                                <div class="mb-2 col-md-12">
+                                    <label for="name" class="form-label">Define your welcome message</label>
+                                    <select name="Type[]" class="form-select">
+                                        <option value="0">Choose option...</option>
+                                        <option value="1">conversational</option>
+                                        <option value="2">link</option>
+                                    </select>
+                                </div>
+                                <input type="hidden" name="option_type[]" value="1">
+                                <div class="mb-2 col-md-12">
+                                    <label for="name" class="form-label">Button value</label>
+                                    <input type="text" class="form-control" name="display_value[]" autocomplete="off" placeholder="Enter display value">
+                                </div>
+        
+                                <div class="mb-2 col-md-12">
+                                    <label for="name" class="form-label">Button action</label>
+                                    <input type="text" class="form-control" name="value[]" autocomplete="off" placeholder="Enter value">
+                                </div>
                             </div>
-    
-                            <div class="mb-2 col-md-12">
-                                <label for="name" class="form-label">Button action</label>
-                                <input type="text" class="form-control" name="value[]" autocomplete="off" placeholder="Enter value">
-                            </div>
-                        </div>
+                        @endif
+                        
 
                         <div class="extra_buttons">
                             
@@ -109,6 +140,8 @@
 </div>
 
 
+@include('bots.includes.ai-workflow')
+
 @endsection
 
 @push('plugin-scripts')
@@ -119,7 +152,12 @@
 @push('custom-scripts')
     <script defer>
         $(document).ready( function () {
-            $('#options_area').hide();
+            let count_node_options = Number($('#options_count').val());
+            if (count_node_options > 0) {
+                $('#options_area').show();
+            } else {
+                $('#options_area').hide();
+            }
             $('#add_options').on('click', () => {
                 let add_options = $('#add_options').val()
                 console.log(add_options);
