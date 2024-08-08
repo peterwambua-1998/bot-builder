@@ -16,9 +16,10 @@ return new class extends Migration
             $table->unsignedBigInteger('node_id');
             $table->boolean('option_type')->default(2); // 1. button 2. ai
             $table->boolean('type')->default(1); // 1. conversational, 2. link
-            $table->string('instructions'); // alias prompt
+            $table->longText('instructions'); // alias prompt
             $table->string('out_of_context_msg');
-            $table->string('website_link');
+            $table->string('website_link')->nullable();
+            $table->double('temperature');
             $table->timestamps();
         });
     }
