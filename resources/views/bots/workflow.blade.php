@@ -10,7 +10,7 @@
       <li class="breadcrumb-item active" aria-current="page">workflow</li>
     </ol>
    <div>
-        <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#m-chat">Test bot</a>
+        <a href="#" class="btn btn-success  bot-test" data-bs-toggle="modal" data-bs-target="#m-chat">Test bot</a>
    </div>
 </nav>
 
@@ -208,7 +208,71 @@
                 $('#temp_value').text($('#temperature').val())
                 
             })
+
+
+            $('.bot-test').on('click', () =>  {
+                $('#other-chats').children().remove();
+
+                
+            })
+            
         } );
+
+
+        document.getElementById('sendButton').addEventListener('click', async function() {
+            var userInput = document.getElementById('userInput').value;
+            if (userInput.trim() !== '') {
+                document.getElementById('userInput').value = '';
+                appendMessage('user', userInput);
+
+                let template = `
+
+                    <div class="indicator">
+                        <div class="chat-message bot ">
+                            <div class="typing-indicator">
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                            </div>
+                        </div>
+                    </div>
+                `
+
+                $('#chat-body').append(template)
+
+
+                const url = '/bots/ai/response'; // Replace with your API endpoint
+                const data = { bot_id: '{{$bot->id}}', user_msg: userInput, '_token': '{{csrf_token()}}' }; // Replace with your data
+
+                const result = await postData(url, data);
+
+                $('.indicator').children().remove();
+
+                appendMessage('bot', result.choices[0].message.content);
+                
+            }
+        });
+
+        function appendMessage(sender, message) {
+            var chatBox = document.getElementById('other-chats');
+            var messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message ' + sender;
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function postData(url = '', data = {}) {
+            const response = await fetch(url, {
+                method: 'POST', 
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data) // body data type must match "Content-Type" header
+            });
+
+            return response.json(); // parses JSON response into native JavaScript objects
+        }
 
     </script>
 @endpush

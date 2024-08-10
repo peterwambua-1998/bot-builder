@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect()->route('login');
+    return view('welcome');
 });
 
 Auth::routes();
@@ -38,3 +38,4 @@ Route::post('/bots/store', [BotController::class, 'store'])->name('bots.store');
 Route::get('/bots/workflow/{id}', [BotController::class, 'workflow'])->name('bot.workflow');
 Route::post('/bots/workflow/store', [BotController::class, 'workflowStore'])->name('bot.workflow.store');
 Route::post('/bots/workflow/ai/store', [BotController::class, 'workflowStoreAi'])->name('bot.workflow.ai.store');
+Route::post('/bots/ai/response', [BotController::class, 'getAiMessage'])->name('bot.ai.response');

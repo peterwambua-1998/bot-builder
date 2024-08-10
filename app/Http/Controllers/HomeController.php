@@ -14,7 +14,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
 
     /**
@@ -24,10 +24,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->role == 1) {
-            return view('home');
-        } else {
-            return redirect()->route('orders.create');
-        }
+        return view('home');
+
     }
 }

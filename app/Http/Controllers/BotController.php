@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Bot;
 use App\Models\Node;
 use App\Models\NodeOption;
-use App\Models\NodeOptionAi;
 use App\Models\NodeOptionsAi;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class BotController extends Controller
 {
@@ -48,9 +48,9 @@ class BotController extends Controller
         if ($welcome_node) {
             $welcome_node_options = NodeOption::where('node_id', '=', $welcome_node->id)->get();
         }
-        $ai_node_options = new Collection();
+        $ai_node_options = null;
         if ($aiWorkflowNode) {
-            $ai_node_options = NodeOption::where('node_id', '=', $welcome_node->id)->first();
+            $ai_node_options = NodeOptionsAi::where('node_id', '=', $aiWorkflowNode->id)->first();
         }
         
         return view('bots.workflow', compact('bot', 'welcome_node', 'welcome_node_options', 'ai_node_options'));
@@ -127,5 +127,40 @@ class BotController extends Controller
             return redirect()->back()->with('error', 'System error please try again');
         }
        
+    }
+
+    public function getAiMessage(Request $request)
+    {
+        $bot = Bot::find($request->bot_id);
+        $aiWorkflowNode = Node::where('bot_id', '=', $bot->id)->where('type', '=', 'ai')->first();
+        $ai_node_options = null;
+        if ($aiWorkflowNode) {
+            $ai_node_options = NodeOptionsAi::where('node_id', '=', $aiWorkflowNode->id)->first();
+        }
+        $system_msg = 'From now on you are a chatbot nad you knowledge base is ' . $ai_node_options->instructions . 
+        ' if user enters a question that is not answerable from your knowledge base answer the question with ' .
+        $ai_node_options->out_of_context_msg . '. Take into account previous replies.';
+        $user_msg = $request->user_msg;
+        
+
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . 'sk-nxyF0hTHiOkgl_fi0h6JJxHIzvjBfoikmf6Z7VAumIT3BlbkFJTsKrq7nZJFsEKoHm6iAmUNG54RpfNIA6JGTy0grsIA',
+        ])->post('https://api.openai.com/v1/chat/completions', [
+            'model' => 'gpt-4o-mini',
+            'messages' => [
+                [
+                    'role' => 'system',
+                    'content' => $system_msg,
+                ],
+                [
+                    'role' => 'user',
+                    'content' => $user_msg,
+                ],
+            ],
+        ]);
+        
+        $responseData = $response->json();
+        return response($responseData);
     }
 }
