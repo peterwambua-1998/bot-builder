@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\BotController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DrinkController;
 use App\Http\Controllers\DrinkOrderController;
+use App\Http\Controllers\FaceBookMessengerController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReservationController;
@@ -39,3 +42,13 @@ Route::get('/bots/workflow/{id}', [BotController::class, 'workflow'])->name('bot
 Route::post('/bots/workflow/store', [BotController::class, 'workflowStore'])->name('bot.workflow.store');
 Route::post('/bots/workflow/ai/store', [BotController::class, 'workflowStoreAi'])->name('bot.workflow.ai.store');
 Route::post('/bots/ai/response', [BotController::class, 'getAiMessage'])->name('bot.ai.response');
+
+
+Route::get('/facebook-messenger/callback', [FaceBookMessengerController::class, 'verifyWebhook'])->name('fb.messenger.verify.webhook');
+
+Route::get('/signin/google', [GoogleController::class, 'google']);
+Route::get('/signin/google/redirect', [GoogleController::class, 'googleRedirect']);
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'dash'])->name('dashboard');
+});

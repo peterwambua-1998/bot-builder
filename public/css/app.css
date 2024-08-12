@@ -22439,3 +22439,10 @@ table {
     border-top-width: 2px;
     border-top-style: solid;
 }
+
+.login-bg {
+  background-image: url('/images/login.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+
+}

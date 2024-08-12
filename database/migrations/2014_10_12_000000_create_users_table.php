@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('role'); // 1.admin 2.reception 3.cashier kitchen  4.cashier bar
-            $table->string('phone_num');
+            $table->enum('role', ['admin', 'client']); // 1.admin 2.client
             $table->string('gender')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

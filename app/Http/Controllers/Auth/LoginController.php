@@ -28,16 +28,12 @@ class LoginController extends Controller
      */
     protected function authenticated()
     {
-        if (Auth::user()->role == '3') {
-            return redirect()->route('orders.create');
+        if (Auth::user()->role == 'client') {
+            return redirect()->route('dashboard');
         }
 
-        if (Auth::user()->role == '4') {
-            return redirect()->route('drinks-orders.create');
-        }
-
-        if (Auth::user()->role == '1') {
-            return redirect()->route('home');
+        if (Auth::user()->role == 'admin') {
+            return redirect()->route('admin-dash');
         }
     }
 
