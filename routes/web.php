@@ -31,24 +31,23 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Route::get('/bots', [BotController::class, 'index'])->name('bots.index');
-Route::get('/bots/create', [BotController::class, 'create'])->name('bots.create');
-Route::post('/bots/store', [BotController::class, 'store'])->name('bots.store');
-
-Route::get('/bots/workflow/{id}', [BotController::class, 'workflow'])->name('bot.workflow');
-Route::post('/bots/workflow/store', [BotController::class, 'workflowStore'])->name('bot.workflow.store');
-Route::post('/bots/workflow/ai/store', [BotController::class, 'workflowStoreAi'])->name('bot.workflow.ai.store');
-Route::post('/bots/ai/response', [BotController::class, 'getAiMessage'])->name('bot.ai.response');
-
-
-Route::get('/facebook-messenger/callback', [FaceBookMessengerController::class, 'verifyWebhook'])->name('fb.messenger.verify.webhook');
-
 Route::get('/signin/google', [GoogleController::class, 'google']);
 Route::get('/signin/google/redirect', [GoogleController::class, 'googleRedirect']);
 
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/facebook-messenger/callback', [FaceBookMessengerController::class, 'verifyWebhook'])->name('fb.messenger.verify.webhook');
+
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'dash'])->name('dashboard');
+
+    Route::get('/bots', [BotController::class, 'index'])->name('bots.index');
+    Route::get('/bots/create', [BotController::class, 'create'])->name('bots.create');
+    Route::post('/bots/store', [BotController::class, 'store'])->name('bots.store');
+
+    Route::get('/bots/workflow/{id}', [BotController::class, 'workflow'])->name('bot.workflow');
+    Route::post('/bots/workflow/store', [BotController::class, 'workflowStore'])->name('bot.workflow.store');
+    Route::post('/bots/workflow/ai/store', [BotController::class, 'workflowStoreAi'])->name('bot.workflow.ai.store');
+    Route::post('/bots/ai/response', [BotController::class, 'getAiMessage'])->name('bot.ai.response');
 });

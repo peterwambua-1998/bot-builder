@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bots', function (Blueprint $table) {
+        Schema::create('conversations', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('language')->nullable();
-            $table->string('logo')->nullable();
-
-            $table->unsignedBigInteger('user_id');
-            
+            $table->unsignedBigInteger('bot_id');
+            $table->longText('bot_msg')->nullable();
+            $table->longText('user_msg')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bots');
+        Schema::dropIfExists('conversations');
     }
 };

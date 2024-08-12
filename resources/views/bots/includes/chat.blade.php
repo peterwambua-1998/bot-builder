@@ -101,7 +101,7 @@
                   Chatbot
                 </div>
                 <div class="chat-body" id="chat-body">
-                    @if ($welcome_node->message)
+                    @if ($welcome_node)
                     <div class="chat-message bot msg-style">
                         <p>{{$welcome_node->message}}</p>
                         @foreach ($welcome_node_options as $option)
@@ -113,7 +113,6 @@
                         @endforeach
                     </div>
                     @endif
-                    
                     
                     <div id="other-chats">
                      

@@ -9,9 +9,12 @@
       <li class="breadcrumb-item"><a href="{{route('bots.index')}}">Bot</a></li>
       <li class="breadcrumb-item active" aria-current="page">workflow</li>
     </ol>
-   <div>
+    @if($ai_node_options)
+    <div>
         <a href="#" class="btn btn-success  bot-test" data-bs-toggle="modal" data-bs-target="#m-chat">Test bot</a>
-   </div>
+    </div>
+   @endif
+
 </nav>
 
 @include('error-display')

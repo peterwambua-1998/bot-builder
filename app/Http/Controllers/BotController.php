@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bot;
+use App\Models\Conversation;
 use App\Models\Node;
 use App\Models\NodeOption;
 use App\Models\NodeOptionsAi;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
@@ -15,7 +17,7 @@ class BotController extends Controller
 {
     public function index()
     {
-        $bots = Bot::all();
+        $bots = Bot::where('user_id', '=', Auth::user()->id);
         return view('bots.index', compact('bots'));
     }
 
@@ -32,6 +34,7 @@ class BotController extends Controller
 
         $bot = new Bot();
         $bot->name = $request->name;
+        $bot->user_id = Auth::user()->id;
         if ($bot->save()) {
             return redirect()->route('bot.workflow', $bot->id)->with('success', 'Bot created successfully');
         }
@@ -61,7 +64,7 @@ class BotController extends Controller
         $request->validate([
             'bot_id' => 'required'
         ]);
-
+        dd($request);
         DB::beginTransaction();
         try {
             $node = new Node();
@@ -161,6 +164,21 @@ class BotController extends Controller
         ]);
         
         $responseData = $response->json();
+
+        dd($responseData);
+
+        // add the message to db both ai and user
+        // start with user msg then ai
+        // $conversation_user = new Conversation();
+        // $conversation_user->bot_id = $bot->id;
+        // $conversation_user->user_msg = $user_msg;
+        // $conversation_user->save();
+
+        // $conversation_b = new Conversation();
+        // $conversation_user->bot_id = $bot->id;
+        // $conversation_user->bot_msg = $responseData[''];
+        // $conversation_user->save();
+
         return response($responseData);
     }
 }

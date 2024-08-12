@@ -7,17 +7,18 @@
       <li class="breadcrumb-item"><a href="#">Bot</a></li>
       <li class="breadcrumb-item active" aria-current="page">List</li>
     </ol>
-   
+    @if($bots->count() > 0)
     <div style="width: 15%">
         <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-primary" style="width: 100%"><ion-icon style="position: relative; top:3px; right: 5px; color: #fff; font-size: 16px;" name="add-circle-outline"></ion-icon> Create Bot</button>
     </div>
+    @endif
 </nav>
 
 @include('error-display')
 
 <div class="row">
-    <div class="col-md-12 grid-margin stretch-card">
-        <div class="row">
+    <div class="col-md-12 grid-margin stretch-card " >
+        <div class="row w-100">
             @foreach ($bots as $bot)
             <div class="col-md-4">
                 <div class="card">
@@ -29,6 +30,13 @@
                 </div>
             </div>
             @endforeach
+
+            @if($bots->count() == 0)
+            <div class="text-center" >
+                <h3>Create your first bot</h3>
+                <p class="text-muted"><a data-bs-toggle="modal" data-bs-target="#exampleModal" href="#" style="color: #1389fe; font-weight:bolder">click here</a> to create bot</p>
+            </div>
+            @endif
         </div>
     </div>
 </div>
