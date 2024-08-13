@@ -1,3 +1,5 @@
+
+
 <nav class="sidebar ">
   <div class="sidebar-header">
     <a href="#" class="sidebar-brand">
@@ -26,6 +28,13 @@
         <a href="{{ url('bots') }}" class="nav-link">
           <ion-icon class="link-icon" name="home-outline" ></ion-icon>
           <span class="link-title">Bots</span>
+        </a>
+      </li>
+
+      <li class="nav-item {{ active_class(['bots']) }}">
+        <a href="{{ route('get.conversations') }}" class="nav-link">
+          <ion-icon class="link-icon" name="home-outline" ></ion-icon>
+          <span class="link-title">Conversations</span>
         </a>
       </li>
       

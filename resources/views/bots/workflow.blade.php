@@ -9,12 +9,7 @@
       <li class="breadcrumb-item"><a href="{{route('bots.index')}}">Bot</a></li>
       <li class="breadcrumb-item active" aria-current="page">workflow</li>
     </ol>
-    @if($ai_node_options)
-    <div>
-        <a href="#" class="btn btn-success  bot-test" data-bs-toggle="modal" data-bs-target="#m-chat">Test bot</a>
-    </div>
-   @endif
-
+   
 </nav>
 
 @include('error-display')
@@ -228,6 +223,25 @@
             });
         }
 
+        const chatbotButton = document.getElementById('chatbotButton');
+        const chatbotModal = document.getElementById('chatbotModal');
+        const closeButton = document.getElementById('closeButton');
+        const sendButton = document.getElementById('sendButton');
+        const chatWindow = document.getElementById('chatWindow');
+        const userInput = document.getElementById('userInput');
+
+        chatbotButton.addEventListener('click', function () {
+            chatbotModal.style.display = 'block';
+            let myuuid = crypto.randomUUID();
+            sessionStorage.setItem("chatbot-conversation-id", myuuid);
+            $('#chatWindow').children().not(':first').remove()
+        });
+
+        closeButton.addEventListener('click', function () {
+            chatbotModal.style.display = 'none';
+            
+        });
+
 
         document.getElementById('sendButton').addEventListener('click', async function() {
             var userInput = document.getElementById('userInput').value;
@@ -248,8 +262,7 @@
                     </div>
                 `
 
-                $('#chat-body').append(template)
-
+                $('#chatWindow').append(template)
 
                 const url = '/bots/ai/response'; // Replace with your API endpoint
                 const data = { bot_id: '{{$bot->id}}', user_msg: userInput, '_token': '{{csrf_token()}}', 'chatbot_conversation_id': sessionStorage.getItem("chatbot-conversation-id"), }; // Replace with your data
@@ -267,14 +280,14 @@
         });
 
         function appendMessage(sender, message) {
-            var chatBox = document.getElementById('other-chats');
+            var chatBox = document.getElementById('chatBox');
             var messageDiv = document.createElement('div');
             messageDiv.className = 'chat-message ' + sender;
             messageDiv.textContent = message;
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
+            chatWindow.appendChild(messageDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
         }
-
+        
         async function postData(url = '', data = {}) {
             const response = await fetch(url, {
                 method: 'POST', 
@@ -287,11 +300,7 @@
             return response.json(); // parses JSON response into native JavaScript objects
         }
 
-        let chatbot_test_btn = document.querySelector('.bot-test');
-        chatbot_test_btn.addEventListener('click', (e) => {
-            let myuuid = crypto.randomUUID();
-            sessionStorage.setItem("chatbot-conversation-id", myuuid);
-        });
+       
 
     </script>
 @endpush

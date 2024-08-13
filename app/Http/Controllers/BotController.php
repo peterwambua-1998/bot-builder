@@ -149,7 +149,7 @@ class BotController extends Controller
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer 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',
+            'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
         ])->post('https://api.openai.com/v1/chat/completions', [
             'model' => 'gpt-4o-mini',
             'messages' => [

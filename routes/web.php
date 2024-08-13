@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\BotController;
+use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DrinkController;
@@ -50,4 +51,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/bots/workflow/store', [BotController::class, 'workflowStore'])->name('bot.workflow.store');
     Route::post('/bots/workflow/ai/store', [BotController::class, 'workflowStoreAi'])->name('bot.workflow.ai.store');
     Route::post('/bots/ai/response', [BotController::class, 'getAiMessage'])->name('bot.ai.response');
+
+    Route::get('/conversations', [ConversationController::class, 'getConversations'])->name('get.conversations');
 });
