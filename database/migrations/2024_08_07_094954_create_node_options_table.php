@@ -18,7 +18,7 @@ return new class extends Migration
             $table->boolean('option_type')->default(1); // 1. button 2. form
             $table->boolean('type')->default(1); // 1. conversational, 2. link
             $table->string('value');
-            $table->string('display_value');
+            $table->string('display_value')->nullable();
             $table->timestamps();
         });
     }

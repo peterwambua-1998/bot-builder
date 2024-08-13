@@ -200,7 +200,7 @@
                         </div>
 
                         <div class="text-right">
-                            <button type="button" class="btn btn-outline-danger btn-xs remove_option" id="add_button">remove</button>
+                            <button type="button" class="btn btn-outline-danger btn-xs remove_option" >remove</button>
                         </div>
                     </div>
                 `;
@@ -250,7 +250,6 @@
 
         closeButton.addEventListener('click', function () {
             chatbotModal.style.display = 'none';
-            
         });
 
 

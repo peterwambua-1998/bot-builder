@@ -94,6 +94,7 @@ class BotController extends Controller
         } catch (\PDOException $th) {
             //throw $th;
             DB::rollBack();
+            dd($th->getMessage(), $th->getLine());
             return redirect()->back()->with('error', 'System error please try again');
         }
        

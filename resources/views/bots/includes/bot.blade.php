@@ -156,6 +156,10 @@
                         @if ($option->type == 2)
                         <a href="{{$option->value}}" class="btn btn-outline-success btn-sm mt-2">{{$option->display_value}}</a>
                         @endif
+
+                        @if ($option->type == 1)
+                        <button class="btn btn-outline-success btn-sm mt-2 conversation">{{$option->value}}</button>
+                        @endif
                     @endif
                 @endforeach
             </div>

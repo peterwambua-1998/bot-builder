@@ -19,6 +19,7 @@ function validateInput() {
         }
     
         if (options_checkbox.value) {
+            
             let a = false;
             let b = false;
             let c = false;
@@ -56,25 +57,21 @@ function validateInput() {
                 }
             })
 
-            if (validate_action) {
-                button_action.forEach((element) => {
-                    let v = element.value.trim();
-    
-                    if (!v) {
-                        element.nextElementSibling.textContent = 'field required'
-                        c = true;
-                    } else {
-                        element.nextElementSibling.textContent = ''
-                        c = false;
-                    }
-                })
-            }
 
+
+            button_action.forEach((element) => {
+                let v = element.value.trim();
+
+                if (!v) {
+                    element.nextElementSibling.textContent = 'field required'
+                    c = true;
+                } else {
+                    element.nextElementSibling.textContent = ''
+                    c = false;
+                }
+            })
+            console.log(c);
             
-
-            console.log(b);
-
-
             if (a == true || b == true || c == true) {
                 return;
             }
@@ -82,29 +79,34 @@ function validateInput() {
         }
         console.log('save');
         
-        // welcome_workflow_form.submit();
+        welcome_workflow_form.submit();
     })
 }
 
 
 options_checkbox.addEventListener('click', removeActionInput);
 
+
+
 function removeActionInput()  {
+    add_btn.addEventListener('click', removeActionInput);
+
     let error_span = document.querySelectorAll('.type-option');
     error_span.forEach(element => {
         
         element.addEventListener('change', (ev) => {
             let v = element.value;
-            console.log(v);
-            
             if (v == 1) {
-                
-                element.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.remove();
+                $(element).parent().next().next().hide();
+            } else {
+                $(element).parent().next().next().show();
             }
         })
 
     });
 }
+
+
 
 
 
