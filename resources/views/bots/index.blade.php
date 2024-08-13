@@ -25,7 +25,7 @@
                     <div class="card-header">{{$bot->name}}</div>
     
                     <div class="card-body">
-                        <button>Edit</button>
+                        <a class="btn btn-success" href="{{route('bot.workflow', $bot->id)}}">workflow</a>
                     </div>
                 </div>
             </div>

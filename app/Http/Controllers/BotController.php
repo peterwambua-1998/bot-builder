@@ -18,7 +18,7 @@ class BotController extends Controller
 {
     public function index()
     {
-        $bots = Bot::where('user_id', '=', Auth::user()->id);
+        $bots = Bot::where('user_id', '=', Auth::user()->id)->get();
         return view('bots.index', compact('bots'));
     }
 
@@ -62,7 +62,6 @@ class BotController extends Controller
 
     public function workflowStore(Request $request)
     {
-
         $request->validate([
             'bot_id' => 'required'
         ]);
@@ -77,7 +76,8 @@ class BotController extends Controller
             $node->message = $request->message;
             $node->save();
 
-            if (count(($request->Type)) > 0) {
+
+            if ($request->has('is_options')) {
                 for ($i=0; $i < count(($request->Type)); $i++) { 
                     $nodeOption = new NodeOption();
                     $nodeOption->node_id = $node->id;
@@ -149,7 +149,7 @@ class BotController extends Controller
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer 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',
+            'Authorization' => 'Bearer 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',
         ])->post('https://api.openai.com/v1/chat/completions', [
             'model' => 'gpt-4o-mini',
             'messages' => [

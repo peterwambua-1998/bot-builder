@@ -70,7 +70,7 @@
                     </div>
 
                     <div class="mb-4 col-md-12">
-                        <input type="checkbox" class="form-check-input" @if ($welcome_node_options->count() > 0) checked @endif id="add_options" value="off">
+                        <input type="checkbox" name="is_options" class="form-check-input" @if ($welcome_node_options->count() > 0) checked @endif id="add_options" value="off">
                         <label class="form-check-label" for="checkDefault">
                         Add options to welcome message 
                         </label>
@@ -149,7 +149,7 @@
 
 
 @include('bots.includes.ai-workflow')
-@include('bots.includes.chat')
+@include('bots.includes.bot')
 
 @endsection
 
@@ -200,11 +200,11 @@
                 `;
 
                 $('.extra_buttons').append(template)
+
+                removeOptions();
+
             });
 
-            $('.remove_option').each((i, e) => {
-                let parent = $(e).parent().remove()
-            });
 
             $('#temp_value').text($('#temperature').val())
             $('#temperature').on('input', (e) => {
@@ -218,6 +218,15 @@
             });
             
         } );
+
+        function removeOptions() {
+            $('.remove_option').each((i, e) => {
+                
+                $(e).on('click', () => {
+                    let parent = $(e).parent().parent().remove()
+                })
+            });
+        }
 
 
         document.getElementById('sendButton').addEventListener('click', async function() {
