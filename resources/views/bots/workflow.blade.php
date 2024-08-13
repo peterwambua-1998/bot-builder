@@ -215,9 +215,7 @@
 
             $('.bot-test').on('click', () =>  {
                 $('#other-chats').children().remove();
-
-                
-            })
+            });
             
         } );
 
@@ -245,13 +243,16 @@
 
 
                 const url = '/bots/ai/response'; // Replace with your API endpoint
-                const data = { bot_id: '{{$bot->id}}', user_msg: userInput, '_token': '{{csrf_token()}}' }; // Replace with your data
+                const data = { bot_id: '{{$bot->id}}', user_msg: userInput, '_token': '{{csrf_token()}}', 'chatbot_conversation_id': sessionStorage.getItem("chatbot-conversation-id"), }; // Replace with your data
 
                 const result = await postData(url, data);
 
                 $('.indicator').children().remove();
 
+                console.log(result);
+                
                 appendMessage('bot', result.choices[0].message.content);
+                console.log(sessionStorage.getItem("chatbot-conversation-id"));
                 
             }
         });
@@ -276,6 +277,12 @@
 
             return response.json(); // parses JSON response into native JavaScript objects
         }
+
+        let chatbot_test_btn = document.querySelector('.bot-test');
+        chatbot_test_btn.addEventListener('click', (e) => {
+            let myuuid = crypto.randomUUID();
+            sessionStorage.setItem("chatbot-conversation-id", myuuid);
+        });
 
     </script>
 @endpush

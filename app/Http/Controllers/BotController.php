@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Bot;
 use App\Models\Conversation;
+use App\Models\ConversationChat;
 use App\Models\Node;
 use App\Models\NodeOption;
 use App\Models\NodeOptionsAi;
@@ -61,10 +62,10 @@ class BotController extends Controller
 
     public function workflowStore(Request $request)
     {
+
         $request->validate([
             'bot_id' => 'required'
         ]);
-        dd($request);
         DB::beginTransaction();
         try {
             $node = new Node();
@@ -148,7 +149,7 @@ class BotController extends Controller
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
+            'Authorization' => 'Bearer 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',
         ])->post('https://api.openai.com/v1/chat/completions', [
             'model' => 'gpt-4o-mini',
             'messages' => [
@@ -165,20 +166,39 @@ class BotController extends Controller
         
         $responseData = $response->json();
 
-        dd($responseData);
 
         // add the message to db both ai and user
         // start with user msg then ai
-        // $conversation_user = new Conversation();
-        // $conversation_user->bot_id = $bot->id;
-        // $conversation_user->user_msg = $user_msg;
-        // $conversation_user->save();
+        $conversation_id = null;
+        $get_conversation = Conversation::where('bot_id', '=', $bot->id)->where('conversation_id', '=', $request->chatbot_conversation_id)->first();
+        if ($get_conversation) {
 
-        // $conversation_b = new Conversation();
-        // $conversation_user->bot_id = $bot->id;
-        // $conversation_user->bot_msg = $responseData[''];
-        // $conversation_user->save();
+            $conversation_id = $get_conversation->id;
+        } else {
+            $conversation = new Conversation();
+            $conversation->bot_id = $bot->id;
+            $conversation->conversation_id = $request->chatbot_conversation_id;
+            $conversation->save();
+
+            $conversation_id = $conversation->id;
+        }
+
+        $conversation_user = new ConversationChat();
+        $conversation_user->user_msg = $user_msg;
+        $conversation_user->conversation_id = $conversation_id;
+        $conversation_user->save();
+
+        $conversation_bot = new ConversationChat();
+        $conversation_bot->bot_msg = $responseData['choices'][0]['message']['content'];
+        $conversation_bot->conversation_id = $conversation_id;
+        $conversation_bot->save();
 
         return response($responseData);
+    }
+
+
+    public function storeConversation()
+    {
+        
     }
 }
