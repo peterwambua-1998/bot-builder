@@ -46,7 +46,7 @@
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="{{route('bot.workflow.store')}}" method="post">
+        <form action="{{route('bot.workflow.store')}}" method="post" id="welcome-workflow-form">
             @csrf
             <input type="hidden" name="bot_id" value="{{$bot->id}}">
             <input type="hidden" name="type" value="welcome">
@@ -61,7 +61,8 @@
 
                     <div class="mb-4 col-md-12">
                         <label for="name" class="form-label">Define your welcome message</label>
-                        <input type="text" @if ($welcome_node) value="{{$welcome_node->message}}"` @endif class="form-control" name="message" autocomplete="off" placeholder="Ex: Hello you can checkout our products...">
+                        <input id="welcome-msg-input" type="text" @if ($welcome_node) value="{{$welcome_node->message}}"` @endif class="form-control" name="message" autocomplete="off" placeholder="Ex: Hello you can checkout our products...">
+                        <span class="text-danger welcome-msg-input-error"></span>
                     </div>
 
                     <div class="mb-4 col-md-12">
@@ -79,43 +80,49 @@
                                 <div class="mb-4 p-3" style="border: 1px solid #cbd5e1; border-radius: 5px;">
                                     <div class="mb-2 col-md-12">
                                         <label for="name" class="form-label">Define your welcome message</label>
-                                        <select name="Type[]" class="form-select">
+                                        <select name="Type[]" class="form-select type-option">
                                             <option value="0">Choose option...</option>
                                             <option @if($op->type == 1) selected @endif value="1">conversational</option>
                                             <option @if($op->type == 2) selected @endif value="2">link</option>
                                         </select>
+                                        <span class="text-danger type-option-error"></span>
                                     </div>
                                     <input type="hidden" name="option_type[]" value="1">
                                     <div class="mb-2 col-md-12">
-                                        <label for="name" class="form-label">Button value</label>
-                                        <input type="text" class="form-control" value="{{$op->display_value}}" name="display_value[]" autocomplete="off" placeholder="Enter display value">
+                                        <label for="name" class="form-label">Button display value</label>
+                                        <input type="text" class="form-control display_value" value="{{$op->display_value}}" name="display_value[]" autocomplete="off" placeholder="Enter display value">
+                                        <span class="text-danger"></span>
                                     </div>
             
                                     <div class="mb-2 col-md-12">
                                         <label for="name" class="form-label">Button action</label>
-                                        <input type="text" class="form-control" name="value[]" value="{{$op->value}}" autocomplete="off" placeholder="Enter value">
+                                        <input type="text" class="form-control button-action" name="value[]" value="{{$op->value}}" autocomplete="off" placeholder="Enter value">
+                                        <span class="text-danger"></span>
                                     </div>
                                 </div>
                             @endforeach
                         @else
                             <div class="mb-4 p-3" style="border: 1px solid #cbd5e1; border-radius: 5px;">
                                 <div class="mb-2 col-md-12">
-                                    <label for="name" class="form-label">Define your welcome message</label>
-                                    <select name="Type[]" class="form-select">
+                                    <label for="name" class="form-label">Type of button</label>
+                                    <select name="Type[]" class="form-select type-option" >
                                         <option value="0">Choose option...</option>
                                         <option value="1">conversational</option>
                                         <option value="2">link</option>
                                     </select>
+                                    <span class="text-danger type-option-error"></span>
                                 </div>
                                 <input type="hidden" name="option_type[]" value="1">
                                 <div class="mb-2 col-md-12">
                                     <label for="name" class="form-label">Button value</label>
-                                    <input type="text" class="form-control" name="display_value[]" autocomplete="off" placeholder="Enter display value">
+                                    <input type="text" class="form-control display_value" name="display_value[]" autocomplete="off" placeholder="Enter display value">
+                                    <span class="text-danger"></span>
                                 </div>
         
                                 <div class="mb-2 col-md-12">
                                     <label for="name" class="form-label">Button action</label>
-                                    <input type="text" class="form-control" name="value[]" autocomplete="off" placeholder="Enter value">
+                                    <input type="text" class="form-control button-action" name="value[]" autocomplete="off" placeholder="Enter value">
+                                    <span class="text-danger"></span>
                                 </div>
 
                                 
@@ -135,7 +142,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-success">Save changes</button>
+                    <button type="submit" class="btn btn-success" id="submit-btn-welcome-msg">Save changes</button>
                 </div>
             </div>
         </form>
@@ -151,6 +158,7 @@
 @push('plugin-scripts')
   <script src="{{ asset('assets/plugins/datatables-net/jquery.dataTables.js') }}"></script>
   <script src="{{ asset('assets/plugins/datatables-net-bs5/dataTables.bootstrap5.js') }}"></script>
+  <script src="{{ asset('js/validation.js') }}" defer></script>
 @endpush
 
 @push('custom-scripts')
@@ -170,22 +178,25 @@
                 let template = `
                     <div class="mb-4 p-3" style="border: 1px solid #cbd5e1; border-radius: 5px;">
                         <div class="mb-2 col-md-12">
-                            <label for="name" class="form-label">Define your welcome message</label>
-                            <select name="Type[]" class="form-select">
+                            <label for="name" class="form-label">Type of button</label>
+                            <select name="Type[]" class="form-select type-option" id="">
                                 <option value="0">Choose option...</option>
                                 <option value="1">conversational</option>
                                 <option value="2">link</option>
                             </select>
+                            <span class="text-danger type-option-error"></span>
                         </div>
-
+                        <input type="hidden" name="option_type[]" value="1">
                         <div class="mb-2 col-md-12">
                             <label for="name" class="form-label">Button value</label>
-                            <input type="text" class="form-control" name="display_value[]" autocomplete="off" placeholder="Enter display value">
+                            <input type="text" class="form-control display_value" name="display_value[]" autocomplete="off" placeholder="Enter display value">
+                            <span class="text-danger"></span>
                         </div>
 
                         <div class="mb-2 col-md-12">
                             <label for="name" class="form-label">Button action</label>
-                            <input type="text" class="form-control" name="value[]" autocomplete="off" placeholder="Enter value">
+                            <input type="text" class="form-control button-action" name="value[]" autocomplete="off" placeholder="Enter value">
+                            <span class="text-danger"></span>
                         </div>
 
                         <div class="text-right">
