@@ -24,7 +24,7 @@
         </a>
       </li>
 
-      <li class="nav-item {{ active_class(['bots']) }}">
+      <li class="nav-item {{ active_class(['bots']) }} {{ active_class(['bots/workflow/*']) }}">
         <a href="{{ url('bots') }}" class="nav-link">
           <ion-icon class="link-icon" name="home-outline" ></ion-icon>
           <span class="link-title">Bots</span>
