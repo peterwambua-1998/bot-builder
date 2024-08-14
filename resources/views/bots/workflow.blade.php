@@ -218,6 +218,12 @@
                 
             })
 
+            $('#token_value').text($('#tokens').val())
+            $('#tokens').on('input', (e) => {
+                $('#token_value').text($('#tokens').val())
+                
+            })
+
 
             $('.bot-test').on('click', () =>  {
                 $('#other-chats').children().remove();
@@ -246,6 +252,14 @@
             let myuuid = crypto.randomUUID();
             sessionStorage.setItem("chatbot-conversation-id", myuuid);
             $('#chatWindow').children().not(':first').remove()
+
+            $('.conversation').each((i, e) => {
+                $(e).on('click', () => {
+                    let btn_value = $(e).text();
+                    appendMessage('user', btn_value);
+                    conversationBtn(btn_value);
+                })
+            })
         });
 
         closeButton.addEventListener('click', function () {
@@ -289,6 +303,30 @@
             }
         });
 
+        async function conversationBtn(value){
+            let template = `
+
+            <div class="indicator">
+                <div class="chat-message bot ">
+                    <div class="typing-indicator">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                </div>
+            </div>
+            `
+
+            $('#chatWindow').append(template)
+
+            const url = '/bots/ai/response'; // Replace with your API endpoint
+            const data = { bot_id: '{{$bot->id}}', user_msg: value, '_token': '{{csrf_token()}}', 'chatbot_conversation_id': sessionStorage.getItem("chatbot-conversation-id"), };
+            const result = await postData(url, data);
+
+            $('.indicator').children().remove();
+            appendMessage('bot', result.choices[0].message.content);
+        }
+
         function appendMessage(sender, message) {
             var chatBox = document.getElementById('chatBox');
             var messageDiv = document.createElement('div');
@@ -309,8 +347,6 @@
 
             return response.json(); // parses JSON response into native JavaScript objects
         }
-
-       
 
     </script>
 @endpush

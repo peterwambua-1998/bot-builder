@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('out_of_context_msg');
             $table->string('website_link')->nullable();
             $table->double('temperature');
+            $table->integer('tokens');
+            $table->longText('workflow');
             $table->timestamps();
         });
     }
