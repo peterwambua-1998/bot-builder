@@ -52,5 +52,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/bots/workflow/ai/store', [BotController::class, 'workflowStoreAi'])->name('bot.workflow.ai.store');
     Route::post('/bots/ai/response', [BotController::class, 'getAiMessage'])->name('bot.ai.response');
 
+
     Route::get('/conversations', [ConversationController::class, 'getConversations'])->name('get.conversations');
 });
+
+Route::get('/bot/live/{id}', [BotController::class, 'liveBot'])->name('live.bot');
+

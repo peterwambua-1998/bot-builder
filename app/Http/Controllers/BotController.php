@@ -213,4 +213,23 @@ class BotController extends Controller
     {
         
     }
+
+
+    public function liveBot($id)
+    {
+        $bot = Bot::find($id);
+        $welcome_node = Node::where('bot_id', '=', $bot->id)->where('type', '=', 'welcome')->first();
+        $aiWorkflowNode = Node::where('bot_id', '=', $bot->id)->where('type', '=', 'ai')->first();
+
+        $welcome_node_options = new Collection();
+        if ($welcome_node) {
+            $welcome_node_options = NodeOption::where('node_id', '=', $welcome_node->id)->get();
+        }
+        $ai_node_options = null;
+        if ($aiWorkflowNode) {
+            $ai_node_options = NodeOptionsAi::where('node_id', '=', $aiWorkflowNode->id)->first();
+        }
+        
+        return view('bots.live-bot', compact('bot', 'welcome_node', 'welcome_node_options', 'ai_node_options'));
+    }
 }
