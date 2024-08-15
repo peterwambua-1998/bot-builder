@@ -189,9 +189,11 @@
 
         chatbotButton.addEventListener('click', function () {
             chatbotModal.style.display = 'block';
-            let myuuid = crypto.randomUUID();
-            sessionStorage.setItem("chatbot-conversation-id", myuuid);
-            $('#chatWindow').children().not(':first').remove()
+            if (sessionStorage.getItem("chatbot-conversation-id") == null || sessionStorage.getItem("chatbot-conversation-id") == undefined) {
+                let myuuid = crypto.randomUUID();
+                sessionStorage.setItem("chatbot-conversation-id", myuuid);
+                $('#chatWindow').children().not(':first').remove()
+            }
 
             $('.conversation').each((i, e) => {
                 $(e).on('click', () => {
@@ -265,6 +267,11 @@
 
             $('.indicator').children().remove();
             appendMessage('bot', result.choices[0].message.content);
+
+            // we can initiate sending email 
+            const conversation_data = {bot_id: '{{$bot->id}}', 'chatbot_conversation_id': sessionStorage.getItem("chatbot-conversation-id"), '_token': '{{csrf_token()}}'}
+            const email_url = '/bot/conversation/email';
+            const email_result = await postData(email_url, conversation_data);
         }
 
         function appendMessage(sender, message) {

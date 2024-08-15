@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('bot_id');
             $table->string('conversation_id');
+            $table->boolean('email_sent')->default(0);
             $table->timestamps();
         });
     }

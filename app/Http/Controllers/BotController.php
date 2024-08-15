@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BotConversation;
 use App\Models\Bot;
 use App\Models\Conversation;
 use App\Models\ConversationChat;
 use App\Models\Node;
 use App\Models\NodeOption;
 use App\Models\NodeOptionsAi;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 
 class BotController extends Controller
 {
@@ -94,6 +97,7 @@ class BotController extends Controller
         } catch (\PDOException $th) {
             //throw $th;
             DB::rollBack();
+
             return redirect()->back()->with('error', 'System error please try again');
         }
        
@@ -159,7 +163,7 @@ class BotController extends Controller
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
+            'Authorization' => 'Bearer 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',
         ])->post('https://api.openai.com/v1/chat/completions', [
             'model' => 'gpt-4o-mini',
             'temperature' => $ai_node_options->temperature,
@@ -184,14 +188,12 @@ class BotController extends Controller
         $conversation_id = null;
         $get_conversation = Conversation::where('bot_id', '=', $bot->id)->where('conversation_id', '=', $request->chatbot_conversation_id)->first();
         if ($get_conversation) {
-
             $conversation_id = $get_conversation->id;
         } else {
             $conversation = new Conversation();
             $conversation->bot_id = $bot->id;
             $conversation->conversation_id = $request->chatbot_conversation_id;
             $conversation->save();
-
             $conversation_id = $conversation->id;
         }
 
@@ -205,13 +207,9 @@ class BotController extends Controller
         $conversation_bot->conversation_id = $conversation_id;
         $conversation_bot->save();
 
-        return response($responseData);
-    }
-
-
-    public function storeConversation()
-    {
         
+
+        return response($responseData);
     }
 
 
@@ -231,5 +229,28 @@ class BotController extends Controller
         }
         
         return view('bots.live-bot', compact('bot', 'welcome_node', 'welcome_node_options', 'ai_node_options'));
+    }
+
+    public function sendEmail(Request $request)
+    {
+        try {
+            $bot  = Bot::find($request->bot_id);
+            $conversation = Conversation::where('bot_id', '=', $request->bot_id)->where('conversation_id', '=', $request->chatbot_conversation_id)->first();
+            if ($conversation) {
+                if ($conversation->email_sent == 0) {
+                    $user = User::find($bot->user_id);
+                    if ($user) {
+                        Mail::to($user)->send(new BotConversation());
+                    }
+                }
+            }
+            $conversation->email_sent = 1;
+            $conversation->update();
+
+            return response(1);
+
+        } catch (\Exception $th) {
+            return response(0);
+        }
     }
 }

@@ -12,14 +12,14 @@
                 <div class="modal-body row">
 
                     <div class="mb-3 col-md-12">
-                        <label for="exampleFormControlTextarea1" class="form-label">Ai Instructions</label>
+                        <label for="exampleFormControlTextarea1" class="form-label">AI Instructions</label>
                         <p class="text-muted tx-13 mb-1">How the bot should operate.</p>
                         <textarea class="form-control" name="instructions" id="instructions" rows="5" spellcheck="false">@if($ai_node_options) {{$ai_node_options->instructions}} @endif</textarea>
                         <span class="text-danger instruction-error"></span>
                     </div>
 
                     <div class="mb-3 col-md-12">
-                        <label for="exampleFormControlTextarea1" class="form-label">Ai knowledge base</label>
+                        <label for="exampleFormControlTextarea1" class="form-label">AI knowledge base</label>
                         <p class="text-muted tx-13 mb-1">knowledge base to answer questions from.</p>
                         <textarea class="form-control" name="workflow" id="workflow" rows="5" spellcheck="false">@if($ai_node_options) {{$ai_node_options->workflow}} @endif</textarea>
                         <span class="text-danger workflow-error"></span>

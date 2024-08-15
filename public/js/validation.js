@@ -26,7 +26,7 @@ function validateInput() {
             let error_span = document.querySelectorAll('.type-option');
             let display_value = document.querySelectorAll('.display_value');
             let button_action = document.querySelectorAll('.button-action');
-            let validate_action = true;
+            let validate_display_value = true;
             
             error_span.forEach(element => {
                 let v = element.value;
@@ -39,7 +39,7 @@ function validateInput() {
                 }
 
                 if (v == 1) {
-                    validate_action == false;
+                    validate_display_value == false;
                 }
 
             });
@@ -70,7 +70,10 @@ function validateInput() {
                     c = false;
                 }
             })
-            console.log(c);
+
+            if (validate_display_value == false) {
+                b = false;
+            }
             
             if (a == true || b == true || c == true) {
                 return;

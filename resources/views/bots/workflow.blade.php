@@ -294,12 +294,10 @@
                 const result = await postData(url, data);
 
                 $('.indicator').children().remove();
-
-                console.log(result);
                 
                 appendMessage('bot', result.choices[0].message.content);
-                console.log(sessionStorage.getItem("chatbot-conversation-id"));
-                
+
+               
             }
         });
 
@@ -323,8 +321,16 @@
             const data = { bot_id: '{{$bot->id}}', user_msg: value, '_token': '{{csrf_token()}}', 'chatbot_conversation_id': sessionStorage.getItem("chatbot-conversation-id"), };
             const result = await postData(url, data);
 
+            console.log(result);
+            
+
             $('.indicator').children().remove();
             appendMessage('bot', result.choices[0].message.content);
+
+            // we can initiate sending email 
+            const conversation_data = {bot_id: '{{$bot->id}}', 'chatbot_conversation_id': sessionStorage.getItem("chatbot-conversation-id"), '_token': '{{csrf_token()}}'}
+            const email_url = '/bot/conversation/email';
+            const email_result = await postData(email_url, conversation_data);
         }
 
         function appendMessage(sender, message) {
@@ -344,7 +350,7 @@
                 },
                 body: JSON.stringify(data) // body data type must match "Content-Type" header
             });
-
+            
             return response.json(); // parses JSON response into native JavaScript objects
         }
 

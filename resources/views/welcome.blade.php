@@ -130,6 +130,6 @@
             </div>
         </div>
 
-        <iframe style="width: 500px; height: 500px; background:transparent; position :fixed; z-index: 1000; bottom: 20px; right: 20px" src="http://127.0.0.1:8000/bot/live/2" title="description"></iframe>
+        {{-- <iframe style="width: 500px; height: 500px; background:transparent; position :fixed; bottom: 10px; right: 20px" src="http://127.0.0.1:8000/bot/live/2" title="description"></iframe> --}}
     </body>
 </html>

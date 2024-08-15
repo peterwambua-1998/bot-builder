@@ -8,7 +8,7 @@
       .drawer {
         /* height: 100%; */
         width: 30vw;
-        position: absolute;
+        position: fixed;
         background: #f1f5f9;
         top: 60px;
         right: 0;
@@ -73,7 +73,7 @@
     <div class="col-md-12 grid-margin stretch-card " >
       <div class="card">
         <div class="card-body">
-            <h6 class="card-title">Material Requisition Table</h6>
+            <h6 class="card-title">Bots conversation Table</h6>
             <p class="text-muted mb-3"></p> 
             <div class="table-responsive">
                 <table class="table table-bordered table-striped" id="dataTableExample">
